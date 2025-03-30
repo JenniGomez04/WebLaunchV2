@@ -1,0 +1,42 @@
+name: Deploy Website  # Nombre del workflow
+
+on:  
+  push:  # Se ejecuta cuando hay un push
+    branches:  
+      - main  # Solo en la rama "main"
+
+permissions:
+  id-token: write
+  pages: write
+
+jobs:  
+  validate-html:  # Validación de HTML
+    runs-on: ubuntu-latest  
+    
+    steps:  
+      - name: Checkout del código
+        uses: actions/checkout@v3
+
+      - name: Validar HTML
+        uses: Cyb3r-Jak3/html5validator-action@v7.2.0
+        with:
+          root: ./
+
+  deploy:  # Despliegue del sitio
+    needs: validate-html  # Solo se ejecuta si la validación de HTML fue exitosa
+    runs-on: ubuntu-latest  
+    steps:
+      - name: Checkout del código  
+        uses: actions/checkout@v3 
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Subir archivos para GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./  # Sube los archivos de la raíz del repo
+
+      - name: Desplegar en GitHub Pages
+        uses: actions/deploy-pages@v4
+        
