@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Optimize images
-        uses: calibre/image-actions@main # Utiliza la acción para optimizar las imágenes reduciendo tamaño
+        uses: docker://jamiemason/image-actions:latest # Utiliza la acción para optimizar las imágenes reduciendo tamaño
         with:
           compress_only: true # Solo comprime las imágenes sin cambiar su tamaño
           quality: 80 # Establece la calidad de las imágenes al 80%
