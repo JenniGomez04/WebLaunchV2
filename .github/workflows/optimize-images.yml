@@ -7,23 +7,22 @@ on:
 
 jobs:
   optimize:
-    runs-on: ubuntu-latest # El workflow se ejecutará en un entorno con Ubuntu
+    runs-on: ubuntu-latest # Se ejecuta en un entorno Ubuntu
 
     steps:
       - name: Checkout repository # Descarga el código del repositorio
-        uses: actions/checkout@v3 # Utiliza la acción oficial para clonar el repositorio en el entorno de ejecución
+        uses: actions/checkout@v3
 
       - name: Optimize images # Paso para optimizar imágenes
-        uses: antonkomarev/github-action-image-optim@0.2.1 # Usa una acción confiable para la optimización de imágenes
+        uses: docker://ghcr.io/imagemin/imagemin-cli:latest # Usa un contenedor Docker con herramientas de optimización
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Token de GitHub para autenticación
-          quality: 80 # Establece la calidad de compresión al 80%
-          minify: true # Minimiza las imágenes para reducir el tamaño sin perder calidad significativa
+          args: '**/*.{jpg,jpeg,png,gif,svg} --out-dir=./' # Comprime imágenes en los formatos más comunes
 
       - name: Commit optimized images # Paso para confirmar y subir los cambios optimizados
         run: |
-          git config --global user.name "github-actions" # Configura el nombre del usuario para los commits automáticos
-          git config --global user.email "actions@github.com" # Configura el correo del usuario para los commits
-          git add . # Agrega todas las imágenes optimizadas al área de preparación
-          git commit -m "Optimized images" || echo "No changes to commit" # Confirma los cambios si existen, o muestra un mensaje si no hay cambios
-          git push # Sube los cambios al repositorio remoto
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add .
+          git commit -m "Optimized images" || echo "No changes to commit"
+          git push
+
