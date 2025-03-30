@@ -1,0 +1,28 @@
+name: Optimize Images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest # Se ejecuta en un entorno Ubuntu
+    steps:
+      - name: Checkout repository # Descarga el código del repositorio para que el workflow pueda trabajar con los archivos
+        uses: actions/checkout@v3
+
+      - name: Optimize images
+        uses: calibre/image-actions@main # Utiliza la acción para optimizar las imágenes reduciendo tamaño
+        with:
+          compress_only: true # Solo comprime las imágenes sin cambiar su tamaño
+          quality: 80 # Establece la calidad de las imágenes al 80%
+
+      # Confirma y sube los cambios
+      - name: Commit optimized images
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add . # Agrega y confirma los cambios si hay imágenes optimizadas
+          git commit -m "Optimized images" || echo "No changes to commit"
+          git push # Sube los cambios al repositorio
