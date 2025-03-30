@@ -7,22 +7,24 @@ on:
 
 jobs:
   optimize:
-    runs-on: ubuntu-latest # Se ejecuta en un entorno Ubuntu
+    runs-on: ubuntu-latest # Utiliza un entorno Ubuntu
 
     steps:
-      - name: Checkout repository # Descarga el código del repositorio
+      # Paso 1: Clonar el repositorio para trabajar con los archivos
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Optimize images # Paso para optimizar imágenes
-        uses: docker://ghcr.io/imagemin/imagemin-cli:latest # Usa un contenedor Docker con herramientas de optimización
+      # Paso 2: Optimizar imágenes usando una acción confiable
+      - name: Optimize images
+        uses: nwojke/image-actions@v1 # Acción para optimizar imágenes
         with:
-          args: '**/*.{jpg,jpeg,png,gif,svg} --out-dir=./' # Comprime imágenes en los formatos más comunes
+          compress_only: true # Solo comprime imágenes sin cambiar su tamaño
+          quality: 80 # Establece la calidad en un 80%
 
-      - name: Commit optimized images # Paso para confirmar y subir los cambios optimizados
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Optimized images" || echo "No changes to commit"
-          git push
+      # Paso 3: Confirmar y subir los cambios optimizados automáticamente
+      - name: Commit optimized images
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Optimized images"
+          branch: main
 
