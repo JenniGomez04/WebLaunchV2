@@ -8,17 +8,17 @@ on:
 jobs:
   optimize:
     runs-on: ubuntu-latest # El workflow se ejecutará en un entorno con Ubuntu
+
     steps:
       - name: Checkout repository # Descarga el código del repositorio
         uses: actions/checkout@v3 # Utiliza la acción oficial para clonar el repositorio en el entorno de ejecución
 
       - name: Optimize images # Paso para optimizar imágenes
-        uses: stefanprodan/image-optimizer-action@master # Usa la acción de optimización de imágenes
+        uses: antonkomarev/github-action-image-optim@0.2.1 # Usa una acción confiable para la optimización de imágenes
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Token de GitHub para autenticación
           quality: 80 # Establece la calidad de compresión al 80%
-          speed: 3 # Define la velocidad de optimización (1=mejor calidad, 11=más rápido)
-          strip: true # Elimina metadatos de las imágenes para reducir su tamaño
-          path: "./" # Aplica la optimización a todas las imágenes en el repositorio
+          minify: true # Minimiza las imágenes para reducir el tamaño sin perder calidad significativa
 
       - name: Commit optimized images # Paso para confirmar y subir los cambios optimizados
         run: |
