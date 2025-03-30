@@ -1,6 +1,8 @@
 name: Mensaje de Bienvenida
 
-on: [pull_request_target]
+on:
+  issues:  # Esto permite que el workflow se ejecute cuando se crea un Issue
+  pull_request_target:
 
 jobs:
   welcome:
@@ -12,3 +14,4 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           issue-message: "¡Gracias por abrir un issue en este repositorio! 🚀"
           pr-message: "¡Gracias por tu contribución! 🎉 Tu PR será revisado pronto."
+
