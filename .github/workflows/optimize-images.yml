@@ -1,28 +1,29 @@
-name: Optimize Images
+name: Optimize Images # Nombre del workflow
 
 on:
   push:
     branches:
-      - main
+      - main # Se ejecuta cuando hay cambios en la rama "main"
 
 jobs:
   optimize:
-    runs-on: ubuntu-latest # Se ejecuta en un entorno Ubuntu
+    runs-on: ubuntu-latest # El workflow se ejecutará en un entorno con Ubuntu
     steps:
-      - name: Checkout repository # Descarga el código del repositorio para que el workflow pueda trabajar con los archivos
-        uses: actions/checkout@v3
+      - name: Checkout repository # Descarga el código del repositorio
+        uses: actions/checkout@v3 # Utiliza la acción oficial para clonar el repositorio en el entorno de ejecución
 
-      - name: Optimize images
-        uses: docker://jamiemason/image-actions:latest # Utiliza la acción para optimizar las imágenes reduciendo tamaño
+      - name: Optimize images # Paso para optimizar imágenes
+        uses: stefanprodan/image-optimizer-action@master # Usa la acción de optimización de imágenes
         with:
-          compress_only: true # Solo comprime las imágenes sin cambiar su tamaño
-          quality: 80 # Establece la calidad de las imágenes al 80%
+          quality: 80 # Establece la calidad de compresión al 80%
+          speed: 3 # Define la velocidad de optimización (1=mejor calidad, 11=más rápido)
+          strip: true # Elimina metadatos de las imágenes para reducir su tamaño
+          path: "./" # Aplica la optimización a todas las imágenes en el repositorio
 
-      # Confirma y sube los cambios
-      - name: Commit optimized images
+      - name: Commit optimized images # Paso para confirmar y subir los cambios optimizados
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add . # Agrega y confirma los cambios si hay imágenes optimizadas
-          git commit -m "Optimized images" || echo "No changes to commit"
-          git push # Sube los cambios al repositorio
+          git config --global user.name "github-actions" # Configura el nombre del usuario para los commits automáticos
+          git config --global user.email "actions@github.com" # Configura el correo del usuario para los commits
+          git add . # Agrega todas las imágenes optimizadas al área de preparación
+          git commit -m "Optimized images" || echo "No changes to commit" # Confirma los cambios si existen, o muestra un mensaje si no hay cambios
+          git push # Sube los cambios al repositorio remoto
