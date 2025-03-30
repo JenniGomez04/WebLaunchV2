@@ -13,16 +13,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install image optimization tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jpegoptim optipng gifsicle
+
       - name: Optimize images
-        uses: calibre/image-actions@main
-        with:
-          compress_only: true # Solo comprime imágenes sin cambiar su tamaño
-          quality: 80 # Ajusta la calidad al 80%
+        run: |
+          find . -type f -name "*.jpg" -exec jpegoptim --max=80 --strip-all {} \;
+          find . -type f -name "*.png" -exec optipng -o7 {} \;
+          find . -type f -name "*.gif" -exec gifsicle -O3 --lossy=80 -b {} \;
 
       - name: Commit optimized images
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Optimized images" || echo "No changes to commit"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Optimized images"
+          branch: main
