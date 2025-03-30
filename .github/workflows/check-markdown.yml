@@ -1,13 +1,21 @@
+# Nombre del flujo de trabajo
 name: Verificar Markdown
 
+# Especifica cuándo debe ejecutarse el workflow.
+# En este caso, se ejecutará cuando haya un "push" o un "pull request" en el repositorio.
 on: [push, pull_request]
 
+# Definimos los trabajos (jobs) que realizará la automatización
 jobs:
   markdown-lint:
+    # Especificamos que el trabajo se ejecutará en una máquina virtual con Ubuntu
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout del código
-        uses: actions/checkout@v3
 
+    steps:
+      # Primer paso: Obtener el código del repositorio
+      - name: Checkout del código
+        uses: actions/checkout@v3  # Descarga el código del repositorio en la máquina virtual
+
+      # Segundo paso: Ejecutar la acción para verificar archivos Markdown
       - name: Verificar Markdown
-        uses: avto-dev/markdown-lint@v1
+        uses: avto-dev/markdown-lint@v1  # Usa la acción 'markdown-lint' para detectar errores en archivos .md
